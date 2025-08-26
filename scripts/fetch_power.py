@@ -14,7 +14,7 @@ PARAMS = {
 }
 
 global_df = pd.read_csv("data/external/global-data-on-sustainable-energy.csv")
-list_of_countries = set(global_df['country'].unique())
+list_of_countries = set(global_df['Country'].unique())
 
 countries_df = pd.read_csv("data/external/countries.csv")
 countries = countries_df.dropna(subset=["latitude", "longitude"])
