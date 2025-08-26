@@ -6,16 +6,20 @@ import time
 BASEURL = "https://power.larc.nasa.gov/api/temporal/monthly/point"
 
 PARAMS = {
-    "parameters": "T2M,PRECTOT,WS50M,ALLSKY_SFC_SW_DWN",      # 2-meter temp, total precip
+    "parameters": "T2M,PRECTOT,WS50M,ALLSKY_SFC_SW_DWN",      # 2-meter temp, total precip, wind at 50m (turbines), insolation
     "community": "AG",
-    "start": 2000,                    # inclusive year
-    "end": 2020,                      # inclusive year
+    "start": 2000,                    
+    "end": 2020,                      
     "format": "JSON"
 }
+
+global_df = pd.read_csv("data/external/global-data-on-sustainable-energy.csv")
+list_of_countries = set(global_df['Country'].unique())
 
 countries_df = pd.read_csv("data/external/countries.csv")
 countries = countries_df.dropna(subset=["latitude", "longitude"])
 countries = countries.drop_duplicates(subset=["country"])
+countries = countries[countries["name"].isin(list_of_countries)]
 
 country_coords = list(countries[["country", "latitude", "longitude"]].itertuples(index=False, name=None))
 
@@ -27,12 +31,12 @@ def fetch_api_data(name, lon, lat, start=2000, end=2020, session=None, pause=0.5
         r.raise_for_status()
         data = r.json()
 
-        #filename = f"data/raw/nasa_power/{name}_{start}-{end}_T2M-PRECTOT.json"
+        filename = f"data/raw/nasa_power/{name}_{start}-{end}_T2M-PRECTOT-WS50M-ALLSKY_SFC_SW_DWN.json"
 
-        #with open(filename, "w") as f:
-        #    json.dump(data, f, indent=2)
+        with open(filename, "w") as f:
+            json.dump(data, f, indent=2)
 
-        #return filename
+        return filename
     
     except Exception as e:
         print(f"Error fetching data for {name}: {e}")
