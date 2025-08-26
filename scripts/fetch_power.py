@@ -6,7 +6,7 @@ import time
 BASEURL = "https://power.larc.nasa.gov/api/temporal/monthly/point"
 
 PARAMS = {
-    "parameters": "T2M,PRECTOT",      # 2-meter temp, total precip
+    "parameters": "T2M,PRECTOT,WS50M,ALLSKY_SFC_SW_DWN",      # 2-meter temp, total precip
     "community": "AG",
     "start": 2000,                    # inclusive year
     "end": 2020,                      # inclusive year
@@ -26,12 +26,13 @@ def fetch_api_data(name, lon, lat, start=2000, end=2020, session=None, pause=0.5
         r = s.get(BASEURL, params=parameters, timeout=30)
         r.raise_for_status()
         data = r.json()
-        filename = f"data/raw/nasa_power/{name}_{start}-{end}_T2M-PRECTOT.json"
 
-        with open(filename, "w") as f:
-            json.dump(data, f, indent=2)
+        #filename = f"data/raw/nasa_power/{name}_{start}-{end}_T2M-PRECTOT.json"
 
-        return filename
+        #with open(filename, "w") as f:
+        #    json.dump(data, f, indent=2)
+
+        #return filename
     
     except Exception as e:
         print(f"Error fetching data for {name}: {e}")
